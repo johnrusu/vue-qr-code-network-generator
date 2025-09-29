@@ -70,3 +70,7 @@ body {
 #app main .container .footer .footer-text {
   @apply text-sm text-gray-500 mt-4;
 }
+
+#app main .container .body .qr-code-img {
+  @apply w-[200px] h-[200px] bg-[url('src/assets/placeholder.png')] bg-repeat bg-contain;
+}

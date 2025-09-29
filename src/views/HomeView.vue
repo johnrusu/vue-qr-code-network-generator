@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from 'vue';
+import { computed, reactive, watch, ref, onMounted } from 'vue';
 // state
 import { useQRCodeStore } from '@/stores/qrCodeStore';
 
 // utils
-import { isNilOrEmpty } from '@/utils/';
+import { isNilOrEmpty, checkImage } from '@/utils/';
 
 // constants
 import { LABELS, ENCRYPTION_TYPES, QR_CODE_API } from '@/constants/';
@@ -25,9 +25,22 @@ const wifi = computed(() => {
       )
     : '';
 });
-const qrCodeImgSrc = computed(() =>
-  !isNilOrEmpty(wifi.value) ? `${QR_CODE_API}${wifi.value}` : '',
-);
+
+const imgSrc = ref<string>('');
+const loading = ref<boolean>(false);
+const qrCodeImgSrc = async () => {
+  if (!isNilOrEmpty(wifi.value)) {
+    loading.value = true;
+    imgSrc.value = '';
+    const img = await checkImage(`${QR_CODE_API}${wifi.value}`);
+    if (!isNilOrEmpty(img) && img?.hasAttribute('src')) {
+      imgSrc.value = img.src;
+      loading.value = false;
+    }
+  } else {
+    imgSrc.value = '';
+  }
+};
 
 watch(wifi, (newWifi) => {
   qrCodeStore.setQrCodeImgSrc(newWifi);
@@ -36,10 +49,15 @@ watch(wifi, (newWifi) => {
 watch(
   () => formInputsRefs,
   (newRefs) => {
+    qrCodeImgSrc();
     qrCodeStore.setFormInputs(newRefs);
   },
   { deep: true },
 );
+
+onMounted(() => {
+  qrCodeImgSrc();
+});
 </script>
 
 <template>
@@ -51,9 +69,15 @@ watch(
       </p>
     </div>
     <div class="body">
-      <div class="qr-code" v-if="qrCodeImgSrc">
-        <img :src="qrCodeImgSrc" :alt="LABELS.QR_CODE" loading="lazy" />
-        <div class="qr-code-label mt-4">{{ LABELS.QR_CODE_IMG_LABEL }}</div>
+      <div class="qr-code flex flex-col items-center" v-if="!isNilOrEmpty(imgSrc) && !loading">
+        <img :src="imgSrc" :alt="LABELS.QR_CODE" loading="lazy" class="qr-code-img" />
+        <div class="qr-code-label mt-4 text-center">{{ LABELS.QR_CODE_IMG_LABEL }}</div>
+      </div>
+      <div
+        v-else-if="loading"
+        class="qr-code loading w-[200px] h-[200px] flex items-center justify-center"
+      >
+        <p>{{ LABELS.LOADING }}</p>
       </div>
       <div class="form">
         <div class="form-group">
@@ -89,10 +113,7 @@ watch(
       </div>
     </div>
     <div class="footer">
-      <button
-        :disabled="isNilOrEmpty(qrCodeImgSrc)"
-        @click="qrCodeStore.downloadQRCode(qrCodeImgSrc)"
-      >
+      <button :disabled="isNilOrEmpty(imgSrc)" @click="qrCodeStore.downloadQRCode(imgSrc)">
         {{ LABELS.DOWNLOAD_BUTTON }}
       </button>
       <div class="footer-text">{{ LABELS.FOOTER_TEXT }}</div>

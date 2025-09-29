@@ -16,6 +16,7 @@ const LABELS = {
   QR_CODE: 'Your WiFi QR Code',
   FOOTER_TEXT: '© 2024 WiFi QR Code Generator. All rights reserved.',
   QR_CODE_IMG_LABEL: 'Point your camera at the QR code to connect to the WiFi network',
+  LOADING: 'Loading...',
 };
 
 const ENCRYPTION_TYPES = {
