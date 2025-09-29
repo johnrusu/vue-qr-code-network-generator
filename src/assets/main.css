@@ -73,5 +73,5 @@ body {
 }
 
 .qr-code-img {
-  @apply w-[200px] h-[200px] bg-[url('src/assets/placeholder.png')] bg-repeat bg-contain max-md:w-full max-md:h-auto;
+  @apply w-[200px] h-[200px] bg-[url('placeholder.png')] bg-repeat bg-contain max-md:w-full max-md:h-auto;
 }
