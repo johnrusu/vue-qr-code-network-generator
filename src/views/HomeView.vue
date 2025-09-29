@@ -59,7 +59,7 @@ watch(
 watch(qrCodeImgRef, (newRef) => {
   if (!isNilOrEmpty(newRef) && !isNilOrEmpty(imgSrc.value)) {
     setTimeout(() => {
-      newRef?.scrollIntoView({ behavior: 'smooth' });
+      newRef?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 1000);
   }
 });
