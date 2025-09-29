@@ -27,6 +27,7 @@ const wifi = computed(() => {
 });
 
 const imgSrc = ref<string>('');
+const qrCodeImgRef = ref<HTMLImageElement | null>(null);
 const loading = ref<boolean>(false);
 const qrCodeImgSrc = async () => {
   if (!isNilOrEmpty(wifi.value)) {
@@ -55,6 +56,14 @@ watch(
   { deep: true },
 );
 
+watch(qrCodeImgRef, (newRef) => {
+  if (!isNilOrEmpty(newRef) && !isNilOrEmpty(imgSrc.value)) {
+    setTimeout(() => {
+      newRef?.scrollIntoView({ behavior: 'smooth' });
+    }, 1000);
+  }
+});
+
 onMounted(() => {
   qrCodeImgSrc();
 });
@@ -70,7 +79,13 @@ onMounted(() => {
     </div>
     <div class="body">
       <div class="qr-code flex flex-col items-center" v-if="!isNilOrEmpty(imgSrc) && !loading">
-        <img :src="imgSrc" :alt="LABELS.QR_CODE" loading="lazy" class="qr-code-img" />
+        <img
+          :src="imgSrc"
+          :alt="LABELS.QR_CODE"
+          loading="lazy"
+          class="qr-code-img"
+          ref="qrCodeImgRef"
+        />
         <div class="qr-code-label mt-4 text-center">{{ LABELS.QR_CODE_IMG_LABEL }}</div>
       </div>
       <div
