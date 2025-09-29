@@ -87,6 +87,11 @@ onMounted(() => {
           ref="qrCodeImgRef"
         />
         <div class="qr-code-label mt-4 text-center">{{ LABELS.QR_CODE_IMG_LABEL }}</div>
+        <div class="download-link mt-2">
+          <router-link to="/print" class="download-qr-code-btn underline">
+            {{ LABELS.DOWNLOAD_BUTTON }}
+          </router-link>
+        </div>
       </div>
       <div
         v-else-if="loading"
@@ -128,9 +133,6 @@ onMounted(() => {
       </div>
     </div>
     <div class="footer">
-      <button :disabled="isNilOrEmpty(imgSrc)" @click="qrCodeStore.downloadQRCode(imgSrc)">
-        {{ LABELS.DOWNLOAD_BUTTON }}
-      </button>
       <div class="footer-text">{{ LABELS.FOOTER_TEXT }}</div>
     </div>
   </div>

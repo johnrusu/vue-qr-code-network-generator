@@ -22,10 +22,17 @@ const qrCodeImgSrc = computed(() =>
 if (isNilOrEmpty(qrCodeStore.qrcodeImgSrc)) {
   router.push({ name: 'home' });
 }
+
+const printQRCode = () => {
+  window.print();
+};
 </script>
 <template>
   <div class="print w-full flex flex-col items-center" v-if="!isNilOrEmpty(qrCodeImgSrc)">
     <img :src="qrCodeImgSrc" :alt="LABELS.QR_CODE" loading="lazy" class="qr-code-img" />
     <div class="qr-code-label mt-4">{{ LABELS.QR_CODE_IMG_LABEL }}</div>
+    <button class="mt-4 underline cursor-pointer" @click="printQRCode">
+      {{ LABELS.PRINT_BUTTON }}
+    </button>
   </div>
 </template>

@@ -17,7 +17,7 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
     "prepare": "husky",
-    "test": "run-p test:unit test:e2e"
+    "test": "vitest && playwright test"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",

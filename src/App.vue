@@ -15,7 +15,7 @@ const qrCodeStore = useQRCodeStore();
 
 const links = computed(() => {
   const { qrcodeImgSrc = '' } = qrCodeStore;
-  const validLinks: Array<{ path: string; name: string }> = [];
+  const validLinks: Array<{ path: string; name: string; icon?: string }> = [];
   ROUTER_LINKS.forEach((link) => {
     if (!isNilOrEmpty(link) && !isNilOrEmpty(link.name) && !isNilOrEmpty(link.path)) {
       if (isNilOrEmpty(qrcodeImgSrc)) {
@@ -34,9 +34,12 @@ const computedValidLinks = computed(() => links.value);
 
 <template>
   <nav v-if="!isNilOrEmpty(qrCodeStore?.qrcodeImgSrc)" class="nav">
-    <RouterLink v-for="link in computedValidLinks" :key="link.path" :to="link.path">{{
-      link.name
-    }}</RouterLink>
+    <div class="nav-links">
+      <RouterLink v-for="link in computedValidLinks" :key="link.path" :to="link.path">
+        <span class="icon" :class="`${link.icon} mr-2`"></span>
+        {{ link.name }}
+      </RouterLink>
+    </div>
   </nav>
   <main>
     <RouterView />

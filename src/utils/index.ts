@@ -1,4 +1,4 @@
-import { anyPass, isEmpty, isNil } from "ramda";
+import { anyPass, isEmpty, isNil } from 'ramda';
 /**
  * Returns `true` if the given value is its type's empty value, `null` or `undefined`.
  *
@@ -21,9 +21,7 @@ import { anyPass, isEmpty, isNil } from "ramda";
  */
 export const isNilOrEmpty = anyPass([isNil, isEmpty]);
 
-export const checkImage = (
-  imageSrc: string = ""
-): Promise<HTMLImageElement | null> => {
+export const checkImage = (imageSrc: string = ''): Promise<HTMLImageElement | null> => {
   if (isNilOrEmpty(imageSrc)) {
     return Promise.resolve(null);
   }
@@ -31,20 +29,18 @@ export const checkImage = (
     const image = new Image();
     image.src = imageSrc;
     image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("could not load image"));
+    image.onerror = () => reject(new Error('could not load image'));
   });
 };
 
-export const basename = (path = "") =>
+export const basename = (path = '') =>
   !isNilOrEmpty(path)
     ? path
-        .split("/")
+        .split('/')
         .reverse()
         .filter((q) => q.length > 0)[0]
     : path;
 
-export const fileExtension = (file = "") =>
-  !isNilOrEmpty(file) ? file.split(".").pop() : file;
+export const fileExtension = (file = '') => (!isNilOrEmpty(file) ? file.split('.').pop() : file);
 
-export const isArrayNotEmpty = (arr: any[]) =>
-  Array.isArray(arr) && arr.length > 0;
+export const isArrayNotEmpty = (arr: []) => Array.isArray(arr) && arr.length > 0;

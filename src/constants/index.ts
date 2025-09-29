@@ -26,8 +26,8 @@ const ENCRYPTION_TYPES = {
 };
 
 const ROUTER_LINKS = [
-  { path: '/', name: 'Home' },
-  { path: '/print', name: 'Print' },
+  { path: '/', name: 'Home', icon: 'fas fa-home' },
+  { path: '/print', name: 'Print Qr Code', icon: 'fas fa-print' },
 ];
 
 export { QR_CODE_API, LABELS, ENCRYPTION_TYPES, ROUTER_LINKS };
