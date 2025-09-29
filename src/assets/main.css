@@ -33,7 +33,7 @@ body {
   @apply text-lg mb-4;
 }
 #app main .container .body {
-  @apply w-full flex flex-row items-center gap-6 max-w-3xl bg-white p-6 rounded-lg shadow-sm;
+  @apply w-full flex  items-center gap-6 max-w-3xl bg-white p-6 rounded-lg shadow-sm flex-col;
 }
 
 #app main .container .body .form {
@@ -62,7 +62,8 @@ body {
   @apply w-full flex flex-col items-center mt-6;
 }
 #app main .container .footer button {
-  @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
+  @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed 
+  cursor-pointer max-md:w-full;
 }
 #app main .container .footer button:hover {
   @apply bg-blue-600;
@@ -71,6 +72,6 @@ body {
   @apply text-sm text-gray-500 mt-4;
 }
 
-#app main .container .body .qr-code-img {
-  @apply w-[200px] h-[200px] bg-[url('src/assets/placeholder.png')] bg-repeat bg-contain;
+.qr-code-img {
+  @apply w-[200px] h-[200px] bg-[url('src/assets/placeholder.png')] bg-repeat bg-contain max-md:w-full max-md:h-auto;
 }
