@@ -107,6 +107,7 @@ onMounted(() => {
             id="ssid"
             :placeholder="LABELS.PLACEHOLDER_SSID"
             v-model="formInputsRefs.ssid"
+            autocomplete="false"
           />
         </div>
         <div class="form-group">
@@ -116,6 +117,7 @@ onMounted(() => {
             id="password"
             :placeholder="LABELS.PLACEHOLDER_PASSWORD"
             v-model="formInputsRefs.password"
+            autocomplete="false"
           />
         </div>
         <div class="form-group">
