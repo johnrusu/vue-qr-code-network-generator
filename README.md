@@ -2,4 +2,4 @@
 
 Tehnologies used: VueJs 3, Typescript, Pinia, Playwright, Tailwind
 
-![Alt text](./src/assets/preview.gif)
+![Alt text](./src/assets/preview-project.gif)
