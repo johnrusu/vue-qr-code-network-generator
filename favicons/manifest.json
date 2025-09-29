@@ -1,0 +1,24 @@
+{
+  "name": "Rusu Ionut",
+  "short_name": "Rusu Ionut",
+  "theme_color": "#0063b1",
+  "icons": [
+    {
+      "src": "/resources/favicons/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/resources/favicons/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000",
+  "scope": "/",
+  "orientation": "natural",
+  "dir": "ltr",
+  "lang": "en"
+}

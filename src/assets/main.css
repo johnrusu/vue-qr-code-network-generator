@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+
+html,
+body {
+  @apply w-full h-full m-0 p-0 font-sans;
+}
+#app {
+  @apply flex flex-col min-h-screen h-full items-center;
+}
+
+#app nav {
+  @apply w-full flex flex-row justify-center items-center p-4 bg-gray-800 text-white gap-2;
+}
+#app nav a {
+  @apply text-white hover:text-gray-300;
+}
+#app nav a:hover {
+  @apply text-gray-300 decoration-1 underline;
+}
+
+#app main {
+  @apply flex-grow w-full flex flex-col items-center p-4;
+}
+#app main .container {
+  @apply w-full max-w-2xl flex flex-col items-center;
+}
+
+#app main .container .header .title {
+  @apply text-3xl font-bold mb-2;
+}
+
+#app main .container .header .description {
+  @apply text-lg mb-4;
+}
+#app main .container .body {
+  @apply w-full flex flex-row items-center gap-6 max-w-3xl bg-white p-6 rounded-lg shadow-sm;
+}
+
+#app main .container .body .form {
+  @apply w-full;
+}
+
+#app main .container .body .form .form-group {
+  @apply mb-4;
+}
+
+#app main .container .body .form .form-group label {
+  @apply block text-gray-700 font-bold mb-2;
+}
+
+#app main .container .body .form .form-group input,
+#app main .container .body .form .form-group select {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+#app main .container .body .form .form-group input:focus,
+#app main .container .body .form .form-group select:focus {
+  @apply border-blue-500;
+}
+
+#app main .container .footer {
+  @apply w-full flex flex-col items-center mt-6;
+}
+#app main .container .footer button {
+  @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
+}
+#app main .container .footer button:hover {
+  @apply bg-blue-600;
+}
+#app main .container .footer .footer-text {
+  @apply text-sm text-gray-500 mt-4;
+}
