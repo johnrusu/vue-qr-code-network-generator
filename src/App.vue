@@ -33,7 +33,10 @@ const computedValidLinks = computed(() => links.value);
 </script>
 
 <template>
-  <nav v-if="!isNilOrEmpty(qrCodeStore?.qrcodeImgSrc)" class="nav">
+  <nav
+    v-if="!isNilOrEmpty(qrCodeStore?.qrcodeImgSrc) && qrCodeStore.formInputsRefs.generated"
+    class="nav"
+  >
     <div class="nav-links">
       <RouterLink v-for="link in computedValidLinks" :key="link.path" :to="link.path">
         <span class="icon" :class="`${link.icon} mr-2`"></span>

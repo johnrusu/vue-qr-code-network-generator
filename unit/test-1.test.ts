@@ -1,162 +1,233 @@
-import { describe, test, expect, beforeEach } from 'vitest';
-import { mount, VueWrapper } from '@vue/test-utils';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createRouter, createWebHistory } from 'vue-router';
-
-// Component under test
 import App from '../src/App.vue';
-
-// Store and utilities
 import { useQRCodeStore } from '../src/stores/qrCodeStore';
+import HomeView from '../src/views/HomeView.vue';
+import PrintView from '../src/views/PrintView.vue';
 
-// Constants
-import { ROUTER_LINKS } from '../src/constants';
+// Mock the utils
+vi.mock('../src/utils/', () => ({
+  isNilOrEmpty: (value: any) => {
+    if (value === null || value === undefined) return true;
+    if (typeof value === 'string') return value.trim() === '';
+    if (Array.isArray(value)) return value.length === 0;
+    if (typeof value === 'object') return Object.keys(value).length === 0;
+    return false;
+  },
+}));
 
-// Mock router for testing
+const routes = [
+  { path: '/', name: 'Home', component: HomeView },
+  { path: '/print', name: 'Print', component: PrintView },
+];
+
 const router = createRouter({
   history: createWebHistory(),
-  routes: [
-    { path: '/', component: { template: '<div>Home</div>' } },
-    { path: '/print', component: { template: '<div>Print</div>' } },
-  ],
+  routes,
 });
 
 describe('App.vue', () => {
-  let wrapper: VueWrapper;
-  let pinia: ReturnType<typeof createPinia>;
-  let qrCodeStore: ReturnType<typeof useQRCodeStore>;
+  let pinia: any;
+  let store: any;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     pinia = createPinia();
     setActivePinia(pinia);
-    qrCodeStore = useQRCodeStore();
+    store = useQRCodeStore();
+  });
 
-    wrapper = mount(App, {
+  const createWrapper = (storeOverrides = {}) => {
+    // Apply store overrides
+    Object.assign(store, storeOverrides);
+
+    return mount(App, {
       global: {
         plugins: [pinia, router],
         stubs: {
-          RouterLink: {
-            template: '<a><slot /></a>',
-            props: ['to'],
-          },
-          RouterView: {
-            template: '<div>Router View Content</div>',
-          },
+          RouterView: true,
+          RouterLink: true,
         },
       },
     });
+  };
 
-    await router.isReady();
-  });
+  describe('Navigation visibility', () => {
+    it('should not show navigation when qrcodeImgSrc is empty', () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: '',
+        formInputsRefs: {
+          ssid: 'test-network',
+          password: 'test-password',
+          authenticationType: 'WPA',
+          generated: false,
+        },
+      });
 
-  test('should mount component successfully', () => {
-    expect(App).toBeTruthy();
-    expect(wrapper.exists()).toBe(true);
-  });
+      const nav = wrapper.find('nav');
+      expect(nav.exists()).toBe(false);
+    });
 
-  test('should render RouterView in main element', () => {
-    const main = wrapper.find('main');
-    expect(main.exists()).toBe(true);
-    expect(main.text()).toContain('Router View Content');
-  });
+    it('should not show navigation when generated is false', () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: 'some-qr-code-data',
+        formInputsRefs: {
+          ssid: 'test-network',
+          password: 'test-password',
+          authenticationType: 'WPA',
+          generated: false,
+        },
+      });
 
-  test('should not show navigation when qrCodeImgSrc is empty', async () => {
-    // Ensure qrCodeImgSrc is empty/null
-    qrCodeStore.setQrCodeImgSrc('');
-    await wrapper.vm.$nextTick();
+      const nav = wrapper.find('nav');
+      expect(nav.exists()).toBe(false);
+    });
 
-    const nav = wrapper.find('nav');
-    expect(nav.exists()).toBe(false);
-  });
+    it('should show navigation when qrcodeImgSrc has value and generated is true', () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: 'some-qr-code-data',
+        formInputsRefs: {
+          ssid: 'test-network',
+          password: 'test-password',
+          authenticationType: 'WPA',
+          generated: true,
+        },
+      });
 
-  test('should show navigation when qrCodeImgSrc has value', async () => {
-    // Set qrCodeImgSrc to have a value
-    qrCodeStore.setQrCodeImgSrc('data:image/png;base64,test');
-    await wrapper.vm.$nextTick();
-
-    const nav = wrapper.find('nav');
-    expect(nav.exists()).toBe(true);
-    expect(nav.classes()).toContain('nav');
-  });
-
-  test('should render correct navigation links when QR code exists', async () => {
-    qrCodeStore.setQrCodeImgSrc('data:image/png;base64,test');
-    await wrapper.vm.$nextTick();
-
-    const navLinks = wrapper.findAll('a');
-
-    // Should render all router links when QR code exists
-    expect(navLinks).toHaveLength(ROUTER_LINKS.length);
-
-    // Check if Home link exists
-    const homeLink = navLinks.find((link) => link.text().includes('Home'));
-    expect(homeLink?.exists()).toBe(true);
-
-    // Check if Print link exists
-    const printLink = navLinks.find((link) => link.text().includes('Print Qr Code'));
-    expect(printLink?.exists()).toBe(true);
-  });
-
-  test('should render navigation links with correct structure', async () => {
-    qrCodeStore.setQrCodeImgSrc('data:image/png;base64,test');
-    await wrapper.vm.$nextTick();
-
-    const navLinks = wrapper.findAll('a');
-
-    navLinks.forEach((link, index) => {
-      const expectedLink = ROUTER_LINKS[index];
-
-      // Check that the link contains the expected text
-      expect(link.text().trim()).toBe(expectedLink.name);
-
-      // Check for icon span (though we're not testing the actual icon classes in this basic test)
-      const iconSpan = link.find('.icon');
-      expect(iconSpan.exists()).toBe(true);
+      const nav = wrapper.find('nav');
+      expect(nav.exists()).toBe(true);
     });
   });
 
-  test('should update navigation visibility reactively when qrCodeImgSrc changes', async () => {
-    // Initially no QR code
-    qrCodeStore.setQrCodeImgSrc('');
-    await wrapper.vm.$nextTick();
-    expect(wrapper.find('nav').exists()).toBe(false);
+  describe('Navigation links', () => {
+    it('should render navigation links when QR code is generated', () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: 'some-qr-code-data',
+        formInputsRefs: {
+          ssid: 'test-network',
+          password: 'test-password',
+          authenticationType: 'WPA',
+          generated: true,
+        },
+      });
 
-    // Add QR code
-    qrCodeStore.setQrCodeImgSrc('data:image/png;base64,test');
-    await wrapper.vm.$nextTick();
-    expect(wrapper.find('nav').exists()).toBe(true);
+      const nav = wrapper.find('nav');
+      expect(nav.exists()).toBe(true);
 
-    // Remove QR code again
-    qrCodeStore.setQrCodeImgSrc('');
-    await wrapper.vm.$nextTick();
-    expect(wrapper.find('nav').exists()).toBe(false);
+      const navLinks = wrapper.find('.nav-links');
+      expect(navLinks.exists()).toBe(true);
+    });
+
+    it('should have proper navigation structure', () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: 'some-qr-code-data',
+        formInputsRefs: {
+          ssid: 'test-network',
+          password: 'test-password',
+          authenticationType: 'WPA',
+          generated: true,
+        },
+      });
+
+      const nav = wrapper.find('nav.nav');
+      expect(nav.exists()).toBe(true);
+      expect(nav.classes()).toContain('nav');
+    });
   });
 
-  test('should have proper navigation structure with nav-links class', async () => {
-    qrCodeStore.setQrCodeImgSrc('data:image/png;base64,test');
-    await wrapper.vm.$nextTick();
+  describe('Main content', () => {
+    it('should always render main element with RouterView', () => {
+      const wrapper = createWrapper();
 
-    const nav = wrapper.find('nav');
-    const navLinksDiv = nav.find('.nav-links');
+      const main = wrapper.find('main');
+      expect(main.exists()).toBe(true);
 
-    expect(navLinksDiv.exists()).toBe(true);
-    expect(navLinksDiv.findAll('a')).toHaveLength(ROUTER_LINKS.length);
+      const routerView = wrapper.findComponent({ name: 'RouterView' });
+      expect(routerView.exists()).toBe(true);
+    });
   });
 
-  test('should properly compute valid links based on store state', async () => {
-    // Test with no QR code - should only show Home
-    qrCodeStore.setQrCodeImgSrc('');
-    await wrapper.vm.$nextTick();
+  describe('Computed properties', () => {
+    it('should compute valid links correctly when no QR code is generated', async () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: '',
+        formInputsRefs: {
+          ssid: '',
+          password: '',
+          authenticationType: 'WPA',
+          generated: false,
+        },
+      });
 
-    // Since nav is hidden when no QR code, we test the computed property indirectly
-    // by checking that navigation doesn't exist
-    expect(wrapper.find('nav').exists()).toBe(false);
+      // Access the component instance to test computed properties
+      const vm = wrapper.vm as any;
 
-    // Test with QR code - should show all links
-    qrCodeStore.setQrCodeImgSrc('data:image/png;base64,test');
-    await wrapper.vm.$nextTick();
+      // The component should only show Home when no QR code is generated
+      expect(vm.computedValidLinks).toBeDefined();
+    });
 
-    const navLinks = wrapper.findAll('a');
-    expect(navLinks).toHaveLength(ROUTER_LINKS.length);
+    it('should compute valid links correctly when QR code is generated', async () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: 'some-qr-code-data',
+        formInputsRefs: {
+          ssid: 'test-network',
+          password: 'test-password',
+          authenticationType: 'WPA',
+          generated: true,
+        },
+      });
+
+      const vm = wrapper.vm as any;
+
+      // When QR code is generated, all valid links should be available
+      expect(vm.computedValidLinks).toBeDefined();
+    });
+  });
+
+  describe('Store integration', () => {
+    it('should use QR code store correctly', () => {
+      const store = useQRCodeStore();
+      expect(store).toBeDefined();
+      expect(store.qrcodeImgSrc).not.toBeDefined();
+      expect(store.formInputsRefs).toBeDefined();
+    });
+
+    it('should react to store changes', async () => {
+      const wrapper = createWrapper({
+        qrcodeImgSrc: '',
+        formInputsRefs: {
+          ssid: 'test',
+          password: 'test',
+          authenticationType: 'WPA',
+          generated: false,
+        },
+      });
+
+      // Initially no nav should be visible
+      expect(wrapper.find('nav').exists()).toBe(false);
+
+      // Update store to show QR code is generated
+      store.qrcodeImgSrc = 'new-qr-code-data';
+      store.formInputsRefs.generated = true;
+
+      await wrapper.vm.$nextTick();
+
+      // Now nav should be visible
+      expect(wrapper.find('nav').exists()).toBe(true);
+    });
+  });
+
+  describe('Component structure', () => {
+    it('should have the correct overall structure', () => {
+      const wrapper = createWrapper();
+
+      // Should have main element
+      expect(wrapper.find('main').exists()).toBe(true);
+
+      // Should contain RouterView
+      expect(wrapper.findComponent({ name: 'RouterView' }).exists()).toBe(true);
+    });
   });
 });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, watch, ref, onMounted } from 'vue';
+import { computed, reactive, watch, ref, onMounted, type Ref } from 'vue';
 // state
 import { useQRCodeStore } from '@/stores/qrCodeStore';
 
@@ -19,7 +19,9 @@ const formInputsRefs = reactive({
 
 const wifi = computed(() => {
   const hidden = false;
-  return !isNilOrEmpty(formInputsRefs.ssid) && !isNilOrEmpty(formInputsRefs.password)
+  return !isNilOrEmpty(formInputsRefs.ssid) &&
+    !isNilOrEmpty(formInputsRefs.password) &&
+    !isNilOrEmpty(formInputsRefs.authenticationType)
     ? encodeURIComponent(
         `WIFI:T:${formInputsRefs.authenticationType};S:${formInputsRefs.ssid};P:${formInputsRefs.password};H:${hidden};;`,
       )
@@ -29,17 +31,57 @@ const wifi = computed(() => {
 const imgSrc = ref<string>('');
 const qrCodeImgRef = ref<HTMLImageElement | null>(null);
 const loading = ref<boolean>(false);
-const qrCodeImgSrc = async () => {
+
+const ssidInput = ref<HTMLInputElement | null>(null);
+const passwordInput = ref<HTMLInputElement | null>(null);
+const authenticationTypeInput = ref<HTMLInputElement | null>(null);
+
+const inputRefs = reactive<{ [key: string]: Ref<HTMLInputElement | null> }>({
+  ssid: ssidInput,
+  password: passwordInput,
+  authenticationType: authenticationTypeInput,
+});
+
+const checkInputs = () => {
+  for (const inputRef in formInputsRefs) {
+    const id = inputRef;
+    const hasValue = !isNilOrEmpty(formInputsRefs[id as keyof typeof formInputsRefs]);
+    const element: HTMLInputElement = inputRefs[id] as unknown as HTMLInputElement;
+    if (!hasValue) {
+      resetAll();
+      if (!isNilOrEmpty(element)) {
+        element.classList.add('input-error');
+      }
+    } else {
+      element.classList.remove('input-error');
+    }
+  }
+
+  if (isNilOrEmpty(formInputsRefs.ssid) && !isNilOrEmpty(ssidInput.value)) {
+    ssidInput.value?.classList.add('input-error');
+    ssidInput.value?.focus();
+  }
+};
+
+const resetAll = () => {
+  imgSrc.value = '';
+};
+
+const qrCodeImgSrc = async (checkInputsStatus = false) => {
+  if (checkInputsStatus) {
+    checkInputs();
+  }
   if (!isNilOrEmpty(wifi.value)) {
     loading.value = true;
-    imgSrc.value = '';
+    resetAll();
     const img = await checkImage(`${QR_CODE_API}${wifi.value}`);
     if (!isNilOrEmpty(img) && img?.hasAttribute('src')) {
       imgSrc.value = img.src;
       loading.value = false;
+      qrCodeStore.setFormInputs({ ...formInputsRefs, generated: true });
     }
   } else {
-    imgSrc.value = '';
+    resetAll();
   }
 };
 
@@ -50,8 +92,13 @@ watch(wifi, (newWifi) => {
 watch(
   () => formInputsRefs,
   (newRefs) => {
-    qrCodeImgSrc();
-    qrCodeStore.setFormInputs(newRefs);
+    qrCodeStore.setFormInputs({
+      ...newRefs,
+      generated: Object.entries(formInputsRefs).some((entry) => isNilOrEmpty(entry[1]))
+        ? false
+        : qrCodeStore.formInputsRefs.generated,
+    });
+    checkInputs();
   },
   { deep: true },
 );
@@ -64,8 +111,12 @@ watch(qrCodeImgRef, (newRef) => {
   }
 });
 
+const isButtonDisabled = computed(() => {
+  return Object.entries(formInputsRefs).some((entry) => isNilOrEmpty(entry[1]));
+});
+
 onMounted(() => {
-  qrCodeImgSrc();
+  qrCodeImgSrc(false);
 });
 </script>
 
@@ -78,7 +129,10 @@ onMounted(() => {
       </p>
     </div>
     <div class="body">
-      <div class="qr-code flex flex-col items-center" v-if="!isNilOrEmpty(imgSrc) && !loading">
+      <div
+        class="qr-code flex flex-col items-center min-h-[280px]"
+        v-if="!isNilOrEmpty(imgSrc) && !loading"
+      >
         <img
           :src="imgSrc"
           :alt="LABELS.QR_CODE"
@@ -95,7 +149,7 @@ onMounted(() => {
       </div>
       <div
         v-else-if="loading"
-        class="qr-code loading w-[200px] h-[200px] flex items-center justify-center"
+        class="qr-code loading w-[200px] min-h-[280px] flex items-center justify-center"
       >
         <p>{{ LABELS.LOADING }}</p>
       </div>
@@ -108,6 +162,8 @@ onMounted(() => {
             :placeholder="LABELS.PLACEHOLDER_SSID"
             v-model="formInputsRefs.ssid"
             autocomplete="false"
+            autofocus
+            ref="ssidInput"
           />
         </div>
         <div class="form-group">
@@ -118,11 +174,16 @@ onMounted(() => {
             :placeholder="LABELS.PLACEHOLDER_PASSWORD"
             v-model="formInputsRefs.password"
             autocomplete="false"
+            ref="passwordInput"
           />
         </div>
         <div class="form-group">
           <label for="encryption">{{ LABELS.AUTHENTICATION_TYPE }}:</label>
-          <select id="encryption" v-model="formInputsRefs.authenticationType">
+          <select
+            id="encryption"
+            v-model="formInputsRefs.authenticationType"
+            ref="authenticationTypeInput"
+          >
             <option
               :value="encryption"
               v-for="(encryption, encryptionIndex) in ENCRYPTION_TYPES"
@@ -131,6 +192,16 @@ onMounted(() => {
               {{ encryption }}
             </option>
           </select>
+        </div>
+        <div class="flex flex-col items-center pt-2">
+          <button
+            :disabled="isButtonDisabled"
+            type="button"
+            class="generate-qr-code-btn p-2 w-full cursor-pointer bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            @click="() => (isButtonDisabled ? null : qrCodeImgSrc(true))"
+          >
+            {{ LABELS.GENERATE_BUTTON }}
+          </button>
         </div>
       </div>
     </div>

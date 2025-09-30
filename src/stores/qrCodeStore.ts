@@ -8,6 +8,7 @@ export const useQRCodeStore = defineStore('qr-code', () => {
     ssid: ref<string>(ENCRYPTION_TYPES.wpa),
     password: ref<string>(''),
     authenticationType: ref<string>(ENCRYPTION_TYPES.wpa),
+    generated: ref<boolean>(false),
   });
 
   const setQrCodeImgSrc = (src: string) => {

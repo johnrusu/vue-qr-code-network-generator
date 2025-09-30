@@ -44,3 +44,13 @@ export const basename = (path = '') =>
 export const fileExtension = (file = '') => (!isNilOrEmpty(file) ? file.split('.').pop() : file);
 
 export const isArrayNotEmpty = (arr: []) => Array.isArray(arr) && arr.length > 0;
+
+export const debounce = (func: () => void, wait: number) => {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return () => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func();
+    }, wait);
+  };
+};
