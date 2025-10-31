@@ -54,3 +54,27 @@ export const debounce = (func: () => void, wait: number) => {
     }, wait);
   };
 };
+
+const isObject = (data: object | string) => typeof data === 'object' && data !== null;
+
+/**
+ * Check if a string is valid JSON
+ *
+ * @func isValidJson
+ * @memberOf Validator
+ * @category Validator
+ * @sig String -> Boolean
+ * @param jsonString
+ * @returns
+ */
+export const validateJson = (json: object | string): object | false => {
+  if (isObject(json)) {
+    return json;
+  }
+  try {
+    return JSON.parse(json as string);
+  } catch (e) {
+    console.error('Invalid JSON string:', e);
+    return false;
+  }
+};

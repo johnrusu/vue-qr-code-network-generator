@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { createRouter, createWebHistory } from 'vue-router';
+
 import App from '../src/App.vue';
-import { useQRCodeStore } from '../src/stores/qrCodeStore';
 import HomeView from '../src/views/HomeView.vue';
 import PrintView from '../src/views/PrintView.vue';
+// Import the utility functions to be mocked
+import { mount } from '@vue/test-utils';
+import { useQRCodeStore } from '../src/stores/qrCodeStore';
 
 // Mock the utils
 vi.mock('../src/utils/', () => ({

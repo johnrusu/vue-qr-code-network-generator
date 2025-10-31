@@ -1,5 +1,7 @@
 const QR_CODE_API = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=';
 
+const TIMEOUT_DURATION = 2500;
+
 const LABELS = {
   TITLE: 'WiFi QR Code Generator',
   DESCRIPTION: 'Generate a QR code for your Wi-Fi network to easily share access with others.',
@@ -17,6 +19,9 @@ const LABELS = {
   FOOTER_TEXT: '© 2024 WiFi QR Code Generator. All rights reserved.',
   QR_CODE_IMG_LABEL: 'Point your camera at the QR code to connect to the WiFi network',
   LOADING: 'Loading...',
+  NO_ANIMATION: 'No Animation Data Found',
+  INVALID_JSON: 'Invalid JSON Data',
+  MISSING_DATA: 'No Animation Data Provided',
 };
 
 const ENCRYPTION_TYPES = {
@@ -30,4 +35,4 @@ const ROUTER_LINKS = [
   { path: '/print', name: 'Print Qr Code', icon: 'fas fa-print' },
 ];
 
-export { QR_CODE_API, LABELS, ENCRYPTION_TYPES, ROUTER_LINKS };
+export { QR_CODE_API, LABELS, ENCRYPTION_TYPES, ROUTER_LINKS, TIMEOUT_DURATION };

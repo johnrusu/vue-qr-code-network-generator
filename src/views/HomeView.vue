@@ -7,9 +7,16 @@ import { useQRCodeStore } from '@/stores/qrCodeStore';
 import { isNilOrEmpty, checkImage } from '@/utils/';
 
 // constants
-import { LABELS, ENCRYPTION_TYPES, QR_CODE_API } from '@/constants/';
+import { LABELS, ENCRYPTION_TYPES, QR_CODE_API, TIMEOUT_DURATION } from '@/constants/';
 
+// components
+import AnimationGenerator from '@/components/AnimationGenerator.vue';
+
+// state
 const qrCodeStore = useQRCodeStore();
+
+// json animations
+import loadingAnimation from '@/assets/animations/loading.json';
 
 const formInputsRefs = reactive({
   ssid: qrCodeStore.formInputsRefs.ssid,
@@ -76,9 +83,14 @@ const qrCodeImgSrc = async (checkInputsStatus = false) => {
     resetAll();
     const img = await checkImage(`${QR_CODE_API}${wifi.value}`);
     if (!isNilOrEmpty(img) && img?.hasAttribute('src')) {
-      imgSrc.value = img.src;
-      loading.value = false;
-      qrCodeStore.setFormInputs({ ...formInputsRefs, generated: true });
+      setTimeout(
+        () => {
+          loading.value = false;
+          imgSrc.value = img.src;
+          qrCodeStore.setFormInputs({ ...formInputsRefs, generated: true });
+        },
+        !checkInputsStatus ? 0 : TIMEOUT_DURATION,
+      );
     }
   } else {
     resetAll();
@@ -107,7 +119,7 @@ watch(qrCodeImgRef, (newRef) => {
   if (!isNilOrEmpty(newRef) && !isNilOrEmpty(imgSrc.value)) {
     setTimeout(() => {
       newRef?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 1000);
+    }, TIMEOUT_DURATION);
   }
 });
 
@@ -151,7 +163,7 @@ onMounted(() => {
         v-else-if="loading"
         class="qr-code loading w-[200px] min-h-[280px] flex items-center justify-center"
       >
-        <p>{{ LABELS.LOADING }}</p>
+        <p><AnimationGenerator :jsonData="loadingAnimation" /></p>
       </div>
       <div class="form">
         <div class="form-group">
