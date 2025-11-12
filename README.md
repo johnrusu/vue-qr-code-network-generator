@@ -7,3 +7,4 @@ Tehnologies used: VueJs 3, Typescript, Pinia, Playwright, Tailwind
 Demo:
 
 - https://wifi.rusu-ionut.ro/
+- https://johnrusu.github.io/vue-qr-code-network-generator/
