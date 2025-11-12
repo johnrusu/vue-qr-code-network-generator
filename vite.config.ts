@@ -8,6 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/vue-qr-code-network-generator/',
   plugins: [vue(), vueJsx(), vueDevTools(), tailwindcss()],
   resolve: {
     alias: {
