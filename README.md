@@ -7,6 +7,4 @@ A modern WiFi QR Code Generator built with Vue.js 3, TypeScript, Pinia, and Tail
 ![Alt text](./src/assets/preview-project.gif)
 
 Demo:
-
-- https://wifi.rusu-ionut.ro/
 - https://johnrusu.github.io/vue-qr-code-network-generator/
