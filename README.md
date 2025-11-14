@@ -94,4 +94,4 @@ src/
 **Rusu Ionut**
 
 - GitHub: [@johnrusu](https://github.com/johnrusu)
-- Website: [https://rusu-ionut.ro.ro](https://rusu-ionut.ro.ro)
+- Website: [https://rusu-ionut.ro](https://rusu-ionut.ro)
