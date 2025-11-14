@@ -16,7 +16,7 @@ const LABELS = {
   DOWNLOAD_BUTTON: 'Download QR Code',
   PRINT_BUTTON: 'Print QR Code',
   QR_CODE: 'Your WiFi QR Code',
-  FOOTER_TEXT: '© 2024 WiFi QR Code Generator. All rights reserved.',
+  FOOTER_TEXT: () => `© ${new Date().getFullYear()} Rusu Ionut. All rights reserved.`,
   QR_CODE_IMG_LABEL: 'Point your camera at the QR code to connect to the WiFi network',
   LOADING: 'Loading...',
   NO_ANIMATION: 'No Animation Data Found',

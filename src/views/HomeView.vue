@@ -218,7 +218,7 @@ onMounted(() => {
       </div>
     </div>
     <div class="footer">
-      <div class="footer-text">{{ LABELS.FOOTER_TEXT }}</div>
+      <div class="footer-text" v-html="LABELS.FOOTER_TEXT()"></div>
     </div>
   </div>
 </template>
