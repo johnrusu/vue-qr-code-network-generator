@@ -94,4 +94,5 @@ src/
 **Rusu Ionut**
 
 - GitHub: [@johnrusu](https://github.com/johnrusu)
-- Website: [https://rusu-ionut.ro](https://rusu-ionut.ro)
+- LinkedIn: [Ionut Rusu](https://www.linkedin.com/in/ionut-rusu-1035b112)
+- Website: [rusu-ionut.ro](https://rusu-ionut.ro)
