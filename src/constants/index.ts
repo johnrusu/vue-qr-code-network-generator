@@ -1,6 +1,6 @@
 const QR_CODE_API = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=';
 
-const TIMEOUT_DURATION = 2500;
+const TIMEOUT_DURATION = 1500; // in milliseconds
 
 const LABELS = {
   TITLE: 'WiFi QR Code Generator',
