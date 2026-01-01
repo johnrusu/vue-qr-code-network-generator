@@ -103,7 +103,7 @@ onMounted(async () => {
   <div class="print w-full flex flex-col items-center p-4" v-if="!isNilOrEmpty(imgSrc)">
     <div class="mb-6">
       <h2 class="text-2xl font-bold md:text-center text-left mb-2">{{ ssid }}</h2>
-      <p class="text-gray-600 md: text-center text-left">{{ LABELS.QR_CODE_IMG_LABEL }}</p>
+      <p class="text-gray-600 md:text-center text-left">{{ LABELS.QR_CODE_IMG_LABEL }}</p>
     </div>
 
     <img :src="imgSrc" :alt="LABELS.QR_CODE" loading="lazy" class="qr-code-img mb-6" />
