@@ -25,6 +25,11 @@ const LABELS = {
   QR_CODE_IMAGE_ALT_TEXT: 'WiFi QR Code Image',
   NO_IMAGE_AVAILABLE: 'No Image Available',
   SHARE_BUTTON: 'Share QR Code',
+  SHARE_VIA_EMAIL: 'Share via Email',
+  COPY_LINK: 'Copy Link',
+  SHARE_VIA_WHATSAPP: 'Share via WhatsApp',
+  SHARE_VIA_TWITTER: 'Share via Twitter',
+  LINK_COPIED: 'Link copied to clipboard!',
 };
 
 const ENCRYPTION_TYPES = {
