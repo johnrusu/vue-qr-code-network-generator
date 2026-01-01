@@ -141,7 +141,7 @@ onMounted(() => {
 <template>
   <div class="container">
     <div class="header flex flex-row items-center justify-start pb-5 mt-5 gap-4 w-full">
-      <div class="logo">
+      <div class="logo hidden md:block">
         <img :src="`${baseUrl}favicons/apple-icon-72x72.png`" alt="Logo" />
       </div>
       <div class="flex items-start flex-col justify-center">
@@ -164,11 +164,19 @@ onMounted(() => {
           ref="qrCodeImgRef"
         />
         <div class="qr-code-label mt-4 text-center">{{ LABELS.QR_CODE_IMG_LABEL }}</div>
-        <div class="download-link mt-2">
-          <router-link to="/print" class="download-qr-code-btn underline">
+        <div class="download-link mt-6 flex flex-col gap-3 w-full max-w-md">
+          <router-link
+            to="/print"
+            class="flex items-center justify-center gap-2 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            <i class="fas fa-download"></i>
             {{ LABELS.DOWNLOAD_BUTTON }}
           </router-link>
-          <router-link :to="shareUrl" class="download-qr-code-btn underline ml-4">
+          <router-link
+            :to="shareUrl"
+            class="flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+          >
+            <i class="fas fa-share-alt"></i>
             {{ LABELS.SHARE_BUTTON }}
           </router-link>
         </div>
