@@ -11,7 +11,6 @@ import { LABELS, ENCRYPTION_TYPES, QR_CODE_API, TIMEOUT_DURATION } from '@/const
 
 // components
 import AnimationGenerator from '@/components/AnimationGenerator.vue';
-import ImageLoader from '@/components/ImageLoader.vue';
 
 // state
 const qrCodeStore = useQRCodeStore();
@@ -20,7 +19,6 @@ const qrCodeStore = useQRCodeStore();
 import loadingAnimation from '@/assets/animations/loading.json';
 
 const baseUrl = import.meta.env.BASE_URL;
-const isDev = import.meta.env.DEV;
 
 const formInputsRefs = reactive({
   ssid: qrCodeStore.formInputsRefs.ssid,
@@ -144,8 +142,7 @@ onMounted(() => {
   <div class="container">
     <div class="header flex flex-row items-center justify-start pb-5 mt-5 gap-4 w-full">
       <div class="logo">
-        <img v-if="isDev" :src="`${baseUrl}favicons/apple-icon-72x72.png`" alt="Logo" />
-        <ImageLoader v-else :src="`${baseUrl}favicons/apple-icon-72x72.png`" />
+        <img :src="`${baseUrl}favicons/apple-icon-72x72.png`" alt="Logo" />
       </div>
       <div class="flex items-start flex-col justify-center">
         <div class="title">{{ LABELS.TITLE }}</div>

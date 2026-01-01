@@ -59,7 +59,7 @@ onMounted(async () => {
     router.push({ name: 'home' });
     return;
   }
-  
+
   await qrCodeImgSrc();
 });
 </script>
