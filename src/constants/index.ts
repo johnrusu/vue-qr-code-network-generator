@@ -22,6 +22,9 @@ const LABELS = {
   NO_ANIMATION: 'No Animation Data Found',
   INVALID_JSON: 'Invalid JSON Data',
   MISSING_DATA: 'No Animation Data Provided',
+  QR_CODE_IMAGE_ALT_TEXT: 'WiFi QR Code Image',
+  NO_IMAGE_AVAILABLE: 'No Image Available',
+  SHARE_BUTTON: 'Share QR Code',
 };
 
 const ENCRYPTION_TYPES = {

@@ -23,18 +23,14 @@ body {
 }
 
 #app main {
-  @apply flex-grow w-full flex flex-col items-center p-4;
+  @apply grow w-full flex flex-col items-center p-4;
 }
 #app main .container {
   @apply w-full max-w-2xl flex flex-col items-center;
 }
 
 #app main .container .header .title {
-  @apply text-3xl font-bold mb-2 text-center;
-}
-
-#app main .container .header .description {
-  @apply text-lg mb-4 text-center;
+  @apply text-3xl font-bold mb-2;
 }
 #app main .container .body {
   @apply w-full flex  items-center gap-6 max-w-3xl bg-white p-6 rounded-lg shadow-sm flex-col;
@@ -68,7 +64,7 @@ body {
 }
 
 #app main .container .footer {
-  @apply w-full flex flex-col items-center mt-6;
+  @apply w-full flex flex-col items-center mt-2;
 }
 #app main .container .footer button {
   @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed 
@@ -82,5 +78,5 @@ body {
 }
 
 .qr-code-img {
-  @apply w-[200px] h-[200px] bg-[url('placeholder.png')] bg-repeat bg-contain max-md:w-full max-md:h-auto;
+  @apply w-50 h-50 bg-[url('placeholder.png')] bg-repeat bg-contain max-md:w-full max-md:h-auto;
 }

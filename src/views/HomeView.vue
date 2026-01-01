@@ -4,19 +4,23 @@ import { computed, reactive, watch, ref, onMounted, type Ref } from 'vue';
 import { useQRCodeStore } from '@/stores/qrCodeStore';
 
 // utils
-import { isNilOrEmpty, checkImage } from '@/utils/';
+import { isNilOrEmpty, loadAsyncImage } from '@/utils/';
 
 // constants
 import { LABELS, ENCRYPTION_TYPES, QR_CODE_API, TIMEOUT_DURATION } from '@/constants/';
 
 // components
 import AnimationGenerator from '@/components/AnimationGenerator.vue';
+import ImageLoader from '@/components/ImageLoader.vue';
 
 // state
 const qrCodeStore = useQRCodeStore();
 
 // json animations
 import loadingAnimation from '@/assets/animations/loading.json';
+
+const baseUrl = import.meta.env.BASE_URL;
+const isDev = import.meta.env.DEV;
 
 const formInputsRefs = reactive({
   ssid: qrCodeStore.formInputsRefs.ssid,
@@ -81,7 +85,7 @@ const qrCodeImgSrc = async (checkInputsStatus = false) => {
   if (!isNilOrEmpty(wifi.value)) {
     loading.value = true;
     resetAll();
-    const img = await checkImage(`${QR_CODE_API}${wifi.value}`);
+    const img = await loadAsyncImage(`${QR_CODE_API}${wifi.value}`);
     if (!isNilOrEmpty(img) && img?.hasAttribute('src')) {
       setTimeout(
         () => {
@@ -127,6 +131,10 @@ const isButtonDisabled = computed(() => {
   return Object.entries(formInputsRefs).some((entry) => isNilOrEmpty(entry[1]));
 });
 
+const shareUrl = computed(() => {
+  return `/share?ssid=${encodeURIComponent(formInputsRefs.ssid)}&password=${encodeURIComponent(formInputsRefs.password)}&authenticationType=${encodeURIComponent(formInputsRefs.authenticationType)}`;
+});
+
 onMounted(() => {
   qrCodeImgSrc(false);
 });
@@ -134,15 +142,21 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <div class="header">
-      <div class="title">{{ LABELS.TITLE }}</div>
-      <p class="description">
-        {{ LABELS.DESCRIPTION }}
-      </p>
+    <div class="header flex flex-row items-center justify-start pb-5 mt-5 gap-4 w-full">
+      <div class="logo">
+        <img v-if="isDev" :src="`${baseUrl}favicons/apple-icon-72x72.png`" alt="Logo" />
+        <ImageLoader v-else :src="`${baseUrl}favicons/apple-icon-72x72.png`" />
+      </div>
+      <div class="flex items-start flex-col justify-center">
+        <div class="title">{{ LABELS.TITLE }}</div>
+        <div>
+          {{ LABELS.DESCRIPTION }}
+        </div>
+      </div>
     </div>
     <div class="body">
       <div
-        class="qr-code flex flex-col items-center min-h-[280px]"
+        class="qr-code flex flex-col items-center min-h-70"
         v-if="!isNilOrEmpty(imgSrc) && !loading"
       >
         <img
@@ -157,11 +171,14 @@ onMounted(() => {
           <router-link to="/print" class="download-qr-code-btn underline">
             {{ LABELS.DOWNLOAD_BUTTON }}
           </router-link>
+          <router-link :to="shareUrl" class="download-qr-code-btn underline ml-4">
+            {{ LABELS.SHARE_BUTTON }}
+          </router-link>
         </div>
       </div>
       <div
         v-else-if="loading"
-        class="qr-code loading w-[200px] min-h-[280px] flex items-center justify-center"
+        class="qr-code loading w-50 min-h-70 flex items-center justify-center"
       >
         <p><AnimationGenerator :jsonData="loadingAnimation" /></p>
       </div>

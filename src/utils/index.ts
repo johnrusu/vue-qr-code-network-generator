@@ -21,15 +21,29 @@ import { anyPass, isEmpty, isNil } from 'ramda';
  */
 export const isNilOrEmpty = anyPass([isNil, isEmpty]);
 
-export const checkImage = (imageSrc: string = ''): Promise<HTMLImageElement | null> => {
+export const loadAsyncImage = (imageSrc: string = ''): Promise<HTMLImageElement | null> => {
   if (isNilOrEmpty(imageSrc)) {
     return Promise.resolve(null);
   }
   return new Promise((resolve, reject) => {
     const image = new Image();
+
+    const cleanup = () => {
+      image.onload = null;
+      image.onerror = null;
+    };
+
+    image.onload = () => {
+      cleanup();
+      resolve(image);
+    };
+
+    image.onerror = () => {
+      cleanup();
+      reject(new Error(`Failed to load image: ${imageSrc}`));
+    };
+
     image.src = imageSrc;
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error('could not load image'));
   });
 };
 
